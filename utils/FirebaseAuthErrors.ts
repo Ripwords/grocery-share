@@ -5,7 +5,7 @@ export const FirebaseAuthErrors = (err: string) => {
     case 'auth/internal-error':
       return 'Internal error'
     case 'auth/invalid-credential':
-      return "You're not registered!"
+      return 'You\'re not registered!'
     case 'auth/invalid-email':
       return 'Invalid email'
     case 'auth/invalid-email-verified':

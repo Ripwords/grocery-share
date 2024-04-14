@@ -21,9 +21,9 @@ export default defineNuxtConfig({
   },
   primevue: {
     directives: {
-      include: ['FocusTrap']
+      include: ['FocusTrap'],
     },
-    cssLayerOrder: "tailwind-base, primevue, tailwind-utilities",
+    cssLayerOrder: 'tailwind-base, primevue, tailwind-utilities',
   },
   css: ['primevue/resources/themes/aura-light-green/theme.css'],
   vuefire: {

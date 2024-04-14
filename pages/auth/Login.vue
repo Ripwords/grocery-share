@@ -1,37 +1,36 @@
 <script lang="ts" setup>
-import { getRedirectResult, signInWithEmailAndPassword } from "firebase/auth"
+import { getRedirectResult, signInWithEmailAndPassword } from 'firebase/auth'
 
 definePageMeta({
-  alias: "/",
+  alias: '/',
 })
 
 const auth = useFirebaseAuth()
 const router = useRouter()
 const toast = useToast()
 
-const email = ref("")
-const password = ref("")
+const email = ref('')
+const password = ref('')
 
 const login = async () => {
   if (!email.value || !password.value) {
     toast.add({
-      severity: "error",
-      summary: "Please fill in all fields",
-      detail: "Email and password are required",
+      severity: 'error',
+      summary: 'Please fill in all fields',
+      detail: 'Email and password are required',
       life: 3500,
     })
     return
   }
 
   signInWithEmailAndPassword(auth!, email.value, password.value)
-    .then((res) => {
-      console.log(res)
-      router.push("/main")
+    .then(() => {
+      router.push('/main')
     })
     .catch((error) => {
       console.error(error)
       toast.add({
-        severity: "error",
+        severity: 'error',
         summary: FirebaseAuthErrors(error.code),
         life: 3500,
       })
@@ -42,7 +41,7 @@ onMounted(() => {
   getRedirectResult(auth!)
     .then((result) => {
       if (result?.user) {
-        router.push("/main")
+        router.push('/main')
       }
     })
     .catch((error) => {
