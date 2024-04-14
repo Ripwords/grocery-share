@@ -2,5 +2,6 @@
 
 <template>
   <SEO />
+  <Toast />
   <NuxtPage />
 </template>

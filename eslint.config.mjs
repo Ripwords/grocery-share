@@ -16,5 +16,6 @@ export default withNuxt(
         svg: 'always',
         math: 'always',
       }],
+      'vue/attribute-hyphenation': 'off',
     },
   })

@@ -13,13 +13,19 @@ export default defineNuxtConfig({
     'nuxt-primevue',
   ],
   pages: true,
-  css: ['primevue/resources/themes/aura-light-green/theme.css'],
   tailwindcss: {
-    exposeConfig: true,
+    editorSupport: true,
   },
   eslint: {
     config: { stylistic: true },
   },
+  primevue: {
+    directives: {
+      include: ['FocusTrap']
+    },
+    cssLayerOrder: "tailwind-base, primevue, tailwind-utilities",
+  },
+  css: ['primevue/resources/themes/aura-light-green/theme.css'],
   vuefire: {
     auth: { enabled: true },
     config: {
