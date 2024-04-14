@@ -1,0 +1,38 @@
+{
+  "name": "nuxt-app",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "lint": "eslint .",
+    "build": "nuxt build",
+    "dev": "nuxt dev",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare",
+    "assets": "pwa-asset-generator ./public/images/icon.png -p '0%' ./public/images/icons"
+  },
+  "dependencies": {
+    "@firebase/app-types": "^0.9.1",
+    "@nuxt/eslint": "^0.3.6",
+    "@nuxtjs/tailwindcss": "^6.11.4",
+    "@pinia/nuxt": "^0.5.1",
+    "@stefanobartoletti/nuxt-social-share": "^0.6.0",
+    "@vite-pwa/nuxt": "^0.6.0",
+    "@vueuse/nuxt": "^10.9.0",
+    "firebase": "^10.11.0",
+    "firebase-admin": "^12.0.0",
+    "firebase-functions": "^4.9.0",
+    "nuxt": "^3.11.2",
+    "nuxt-icon": "^0.6.10",
+    "nuxt-primevue": "^0.3.1",
+    "nuxt-vuefire": "^1.0.2",
+    "primevue": "^3.51.0",
+    "vue": "^3.4.21",
+    "vue-router": "^4.3.0"
+  },
+  "devDependencies": {
+    "@nuxt/eslint-config": "^0.3.6",
+    "eslint": "^9.0.0",
+    "pwa-asset-generator": "^6.3.1"
+  }
+}
