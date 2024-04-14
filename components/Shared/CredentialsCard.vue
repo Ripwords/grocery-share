@@ -1,19 +1,19 @@
 <script lang="ts" setup>
 const props = defineProps<{
-  type: 'login' | 'register'
+  type: "login" | "register"
 }>()
-const emits = defineEmits(['login', 'register'])
+const emits = defineEmits(["login", "register"])
 const router = useRouter()
 
-const email = defineModel<string>('email', {
+const email = defineModel<string>("email", {
   required: true,
 })
-const password = defineModel<string>('password', {
+const password = defineModel<string>("password", {
   required: true,
 })
-const confirmPassword = defineModel<string>('confirmPassword')
-if (props.type === 'register' && confirmPassword.value === undefined) {
-  throw new Error('confirmPassword is required for register')
+const confirmPassword = defineModel<string>("confirmPassword")
+if (props.type === "register" && confirmPassword.value === undefined) {
+  throw new Error("confirmPassword is required for register")
 }
 
 const showPassword = ref(false)
@@ -24,14 +24,12 @@ const showPassword = ref(false)
     <Card class="w-[450px]">
       <template #header>
         <img
-          src="/images/icons/apple-splash-1136-640.jpg"
+          src="/img/icons/apple-splash-1136-640.jpg"
           alt="logo"
           loading="lazy"
         />
       </template>
-      <template #title>
-        Grocery Share
-      </template>
+      <template #title> Grocery Share </template>
       <template #content>
         <div class="flex flex-col">
           <!-- EMAIL -->
@@ -114,7 +112,8 @@ const showPassword = ref(false)
             <a
               class="cursor-pointer underline text-blue-500 hover:text-blue-700"
               @click="router.push('/auth/login')"
-            >Login here</a>
+              >Login here</a
+            >
           </small>
         </div>
       </template>

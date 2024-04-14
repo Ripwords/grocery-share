@@ -16,9 +16,6 @@ export default defineNuxtConfig({
   tailwindcss: {
     editorSupport: true,
   },
-  eslint: {
-    config: { stylistic: true },
-  },
   primevue: {
     directives: {
       include: ['FocusTrap'],
@@ -39,35 +36,49 @@ export default defineNuxtConfig({
     },
   },
   pwa: {
+    devOptions: {
+      enabled: true,
+      suppressWarnings: true,
+      navigateFallback: '/',
+      navigateFallbackAllowlist: [/^\/$/],
+      type: 'module',
+    },
+    base: '/',
+    workbox: {
+      globPatterns: ['**/*.{js,css,html,png,svg,ico}'],
+    },
+    injectManifest: {
+      globPatterns: ['**/*.{js,css,html,png,svg,ico}'],
+    },
     manifest: {
       name: 'Grocery Share',
       short_name: 'Grocery Share',
       description: 'Grocery Share is a platform for sharing lists with anyone!',
       lang: 'en',
-      theme_color: '#4DBA87',
-      background_color: '#4DBA87',
+      theme_color: '#b9bba5',
+      background_color: '#b9bba5',
       display: 'standalone',
       icons: [
         {
-          src: 'public/images/icons/manifest-icon-192.maskable.png',
+          src: 'public/img/icons/manifest-icon-192.maskable.png',
           sizes: '192x192',
           type: 'image/png',
           purpose: 'any',
         },
         {
-          src: 'public/images/icons/manifest-icon-192.maskable.png',
+          src: 'public/img/icons/manifest-icon-192.maskable.png',
           sizes: '192x192',
           type: 'image/png',
           purpose: 'maskable',
         },
         {
-          src: 'public/images/icons/manifest-icon-512.maskable.png',
+          src: 'public/img/icons/manifest-icon-512.maskable.png',
           sizes: '512x512',
           type: 'image/png',
           purpose: 'any',
         },
         {
-          src: 'public/images/icons/manifest-icon-512.maskable.png',
+          src: 'public/img/icons/manifest-icon-512.maskable.png',
           sizes: '512x512',
           type: 'image/png',
           purpose: 'maskable',

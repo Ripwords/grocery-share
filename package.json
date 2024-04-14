@@ -9,7 +9,7 @@
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
-    "assets": "pwa-asset-generator ./public/images/icon.png -p '0%' ./public/images/icons"
+    "assets": "pwa-asset-generator ./public/img/icon.png -p '0%' ./public/img/icons"
   },
   "dependencies": {
     "@firebase/app-types": "^0.9.1",

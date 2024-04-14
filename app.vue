@@ -1,7 +1,10 @@
 <script lang="ts" setup></script>
 
 <template>
-  <SEO />
-  <Toast />
-  <NuxtPage />
+  <div>
+    <UtilitySEO />
+    <Toast />
+    <NuxtPwaManifest />
+    <NuxtPage />
+  </div>
 </template>
