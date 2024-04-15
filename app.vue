@@ -1,10 +1,14 @@
-<script lang="ts" setup></script>
+<script lang="ts" setup>
+useAuthWatcher()
+</script>
 
 <template>
   <div>
     <UtilitySEO />
     <Toast />
     <NuxtPwaManifest />
-    <NuxtPage />
+    <NuxtLayout>
+      <NuxtPage />
+    </NuxtLayout>
   </div>
 </template>

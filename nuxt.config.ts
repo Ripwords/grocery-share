@@ -24,7 +24,10 @@ export default defineNuxtConfig({
   },
   css: ['primevue/resources/themes/aura-light-green/theme.css'],
   vuefire: {
-    auth: { enabled: true },
+    auth: {
+      enabled: true,
+      persistence: ["browserLocal", "inMemory", "indexedDBLocal", "browserSession"]
+    },
     config: {
       apiKey: 'AIzaSyAvTFnFWFKpXmF0SLIkMNbHHZtudxkz0Zg',
       authDomain: 'grocery-share-d71c3.firebaseapp.com',
@@ -36,13 +39,6 @@ export default defineNuxtConfig({
     },
   },
   pwa: {
-    devOptions: {
-      enabled: true,
-      suppressWarnings: true,
-      navigateFallback: '/',
-      navigateFallbackAllowlist: [/^\/$/],
-      type: 'module',
-    },
     base: '/',
     workbox: {
       globPatterns: ['**/*.{js,css,html,png,svg,ico}'],
