@@ -24,10 +24,7 @@ export default defineNuxtConfig({
   },
   css: ['primevue/resources/themes/aura-light-green/theme.css'],
   vuefire: {
-    auth: {
-      enabled: true,
-      persistence: ["browserLocal", "inMemory", "indexedDBLocal", "browserSession"]
-    },
+    auth: { enabled: true, persistence: ["browserLocal", "inMemory", "indexedDBLocal", "browserSession"] },
     config: {
       apiKey: 'AIzaSyAvTFnFWFKpXmF0SLIkMNbHHZtudxkz0Zg',
       authDomain: 'grocery-share-d71c3.firebaseapp.com',
