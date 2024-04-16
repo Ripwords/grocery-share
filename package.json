@@ -26,6 +26,7 @@
     "nuxt-icon": "^0.6.10",
     "nuxt-primevue": "^0.3.1",
     "nuxt-vuefire": "^1.0.2",
+    "primeicons": "^7.0.0",
     "primevue": "^3.51.0",
     "vue": "^3.4.21",
     "vue-router": "^4.3.0"

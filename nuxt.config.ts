@@ -22,7 +22,7 @@ export default defineNuxtConfig({
     },
     cssLayerOrder: 'tailwind-base, primevue, tailwind-utilities',
   },
-  css: ['primevue/resources/themes/aura-light-green/theme.css'],
+  css: ['primevue/resources/themes/aura-light-green/theme.css', 'primeicons/primeicons.css'],
   vuefire: {
     auth: { enabled: true, persistence: ["browserLocal", "inMemory", "indexedDBLocal", "browserSession"] },
     config: {
