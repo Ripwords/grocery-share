@@ -15,6 +15,7 @@ export default defineNuxtConfig({
   pages: true,
   tailwindcss: {
     editorSupport: true,
+    exposeConfig: true,
   },
   primevue: {
     directives: {
@@ -36,6 +37,11 @@ export default defineNuxtConfig({
     },
   },
   pwa: {
+    devOptions: {
+      enabled: true,
+      suppressWarnings: true,
+      navigateFallback: "/"
+    },
     base: '/',
     workbox: {
       globPatterns: ['**/*.{js,css,html,png,svg,ico}'],

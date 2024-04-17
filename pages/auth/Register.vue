@@ -1,5 +1,8 @@
 <script lang="ts" setup>
-import { createUserWithEmailAndPassword } from "firebase/auth"
+import {
+  createUserWithEmailAndPassword,
+  sendEmailVerification,
+} from "firebase/auth"
 
 const auth = useFirebaseAuth()
 const user = useCurrentUser()
@@ -33,8 +36,9 @@ const register = async () => {
   }
 
   createUserWithEmailAndPassword(auth!, email.value, password.value)
-    .then(() => {
-      router.push("/main")
+    .then(async () => {
+      await sendEmailVerification(auth!.currentUser!)
+      router.push("/home/grocery-list")
     })
     .catch((error) => {
       console.error(error)
@@ -53,7 +57,7 @@ const register = async () => {
 // prevent user from accessing the register page
 onMounted(() => {
   if (user.value) {
-    router.push("/auth/main")
+    router.push("/auth/home/grocery-list")
   }
 })
 </script>

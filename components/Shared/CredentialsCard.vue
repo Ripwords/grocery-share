@@ -53,54 +53,60 @@ watch(enter, () => {
         <template #title> Grocery Share </template>
         <template #content>
           <div class="flex flex-col">
-            <!-- EMAIL -->
-            <InputGroup>
-              <InputGroupAddon>
-                <Icon name="ph:envelope-duotone" />
-              </InputGroupAddon>
-              <InputText
-                v-model="email"
-                placeholder="Email"
-                type="email"
-                aria-describedby="email"
-              />
-            </InputGroup>
-
-            <!-- PASSWORD -->
-            <InputGroup>
-              <InputGroupAddon>
-                <Icon name="ph:password-duotone" />
-              </InputGroupAddon>
-              <InputText
-                v-model="password"
-                placeholder="Password"
-                :type="showPassword ? 'text' : 'password'"
-              />
-              <InputGroupAddon>
-                <Icon
-                  :name="showPassword ? 'ph:eye-slash-fill' : 'ph:eye-fill'"
-                  @click="showPassword = !showPassword"
+            <form>
+              <!-- EMAIL -->
+              <InputGroup>
+                <InputGroupAddon>
+                  <Icon name="ph:envelope-duotone" />
+                </InputGroupAddon>
+                <InputText
+                  v-model="email"
+                  placeholder="Email"
+                  type="email"
+                  aria-describedby="email"
+                  autocomplete="email"
                 />
-              </InputGroupAddon>
-            </InputGroup>
+              </InputGroup>
 
-            <!-- CONFIRM PASSWORD -->
-            <InputGroup v-if="props.type === 'register'">
-              <InputGroupAddon>
-                <Icon name="ph:password-duotone" />
-              </InputGroupAddon>
-              <InputText
-                v-model="confirmPassword"
-                placeholder="Confirm Password"
-                :type="showPassword ? 'text' : 'password'"
-              />
-              <InputGroupAddon>
-                <Icon
-                  :name="showPassword ? 'ph:eye-slash-fill' : 'ph:eye-fill'"
-                  @click="showPassword = !showPassword"
+              <!-- PASSWORD -->
+              <InputGroup>
+                <InputGroupAddon>
+                  <Icon name="ph:password-duotone" />
+                </InputGroupAddon>
+                <InputText
+                  v-model="password"
+                  placeholder="Password"
+                  :type="showPassword ? 'text' : 'password'"
+                  :autocomplete="
+                    props.type === 'login' ? 'current-password' : 'new-password'
+                  "
                 />
-              </InputGroupAddon>
-            </InputGroup>
+                <InputGroupAddon>
+                  <Icon
+                    :name="showPassword ? 'ph:eye-slash-fill' : 'ph:eye-fill'"
+                    @click="showPassword = !showPassword"
+                  />
+                </InputGroupAddon>
+              </InputGroup>
+
+              <!-- CONFIRM PASSWORD -->
+              <InputGroup v-if="props.type === 'register'">
+                <InputGroupAddon>
+                  <Icon name="ph:password-duotone" />
+                </InputGroupAddon>
+                <InputText
+                  v-model="confirmPassword"
+                  placeholder="Confirm Password"
+                  :type="showPassword ? 'text' : 'password'"
+                />
+                <InputGroupAddon>
+                  <Icon
+                    :name="showPassword ? 'ph:eye-slash-fill' : 'ph:eye-fill'"
+                    @click="showPassword = !showPassword"
+                  />
+                </InputGroupAddon>
+              </InputGroup>
+            </form>
           </div>
         </template>
         <template #footer>

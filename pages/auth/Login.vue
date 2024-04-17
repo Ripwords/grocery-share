@@ -28,7 +28,7 @@ const login = async () => {
 
   signInWithEmailAndPassword(auth!, email.value, password.value)
     .then(() => {
-      router.push("/main")
+      router.push("/home/grocery-list")
     })
     .catch((error) => {
       console.error(error)
@@ -45,13 +45,13 @@ const login = async () => {
 
 onMounted(() => {
   if (auth?.currentUser) {
-    router.push("/main")
+    router.push("/home/grocery-list")
   }
 
   getRedirectResult(auth!)
     .then((result) => {
       if (result?.user) {
-        router.push("/main")
+        router.push("/home/grocery-list")
       }
     })
     .catch((error) => {

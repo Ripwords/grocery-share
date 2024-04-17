@@ -12,6 +12,8 @@ export const FirebaseAuthErrors = (err: string) => {
       return 'Please verify your email to login'
     case 'auth/invalid-password':
       return 'Invalid password'
+    case 'auth/weak-password':
+      return 'Password is too weak, password should be at least 6 characters long'
     default:
       return 'An error occurred'
   }
