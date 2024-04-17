@@ -1,6 +1,6 @@
 import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore"
 
-export const useAuthWatcher = async () => {
+export const useAuthWatcher = () => {
   const route = useRoute()
   const router = useRouter()
 
@@ -8,6 +8,7 @@ export const useAuthWatcher = async () => {
   const currUser = useCurrentUser()
 
   watchOnce(currUser, async () => {
+    if (!currUser.value) return
     const userDoc = doc(db, "users", currUser.value!.uid)
     const userSnap = await getDoc(userDoc)
 

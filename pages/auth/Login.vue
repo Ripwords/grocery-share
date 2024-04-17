@@ -1,5 +1,10 @@
 <script lang="ts" setup>
-import { getRedirectResult, signInWithEmailAndPassword } from "firebase/auth"
+import {
+  getRedirectResult,
+  signInWithEmailAndPassword,
+  signInWithRedirect,
+  GoogleAuthProvider,
+} from "firebase/auth"
 
 definePageMeta({
   alias: "/",
@@ -9,7 +14,7 @@ const auth = useFirebaseAuth()
 const router = useRouter()
 const toast = useToast()
 
-const loading = ref(false)
+const loading = ref(true)
 const email = ref("")
 const password = ref("")
 
@@ -43,7 +48,17 @@ const login = async () => {
     })
 }
 
+const loginWithGoogle = async () => {
+  const provider = new GoogleAuthProvider()
+  try {
+    await signInWithRedirect(auth!, provider)
+  } catch (e) {
+    console.log(e)
+  }
+}
+
 onMounted(() => {
+  loading.value = true
   if (auth?.currentUser) {
     router.push("/home/grocery-list")
   }
@@ -57,6 +72,9 @@ onMounted(() => {
     .catch((error) => {
       console.error(error)
     })
+    .finally(() => {
+      loading.value = false
+    })
 })
 </script>
 
@@ -68,6 +86,12 @@ onMounted(() => {
       :loading
       type="login"
       @login="login"
-    />
+    >
+      <Button
+        class="bg-white"
+        @click="loginWithGoogle"
+        ><Icon name="logos:google-icon"
+      /></Button>
+    </LazySharedCredentialsCard>
   </div>
 </template>

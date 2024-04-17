@@ -61,6 +61,7 @@ watch(enter, () => {
                 </InputGroupAddon>
                 <InputText
                   v-model="email"
+                  :disabled="loading"
                   placeholder="Email"
                   type="email"
                   aria-describedby="email"
@@ -75,6 +76,7 @@ watch(enter, () => {
                 </InputGroupAddon>
                 <InputText
                   v-model="password"
+                  :disabled="loading"
                   placeholder="Password"
                   :type="showPassword ? 'text' : 'password'"
                   :autocomplete="
@@ -96,6 +98,7 @@ watch(enter, () => {
                 </InputGroupAddon>
                 <InputText
                   v-model="confirmPassword"
+                  :disabled="loading"
                   placeholder="Confirm Password"
                   :type="showPassword ? 'text' : 'password'"
                 />
@@ -115,20 +118,24 @@ watch(enter, () => {
             class="flex justify-center gap-4"
           >
             <Button
+              :disabled="loading"
               type="submit"
               label="Login"
               @click="emits('login')"
             />
             <Button
+              :disabled="loading"
               type="button"
               label="Register"
               @click="router.push('/auth/register')"
             />
+            <slot />
           </div>
 
           <div v-else>
             <div class="flex justify-center">
               <Button
+                :disabled="loading"
                 type="submit"
                 label="Register"
                 @click="emits('register')"

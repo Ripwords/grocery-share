@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-await useAuthWatcher()
+useAuthWatcher()
 </script>
 
 <template>
