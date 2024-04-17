@@ -42,13 +42,6 @@ const menuItems = ref([
         },
       },
       {
-        label: "Settings",
-        icon: "pi pi-fw pi-cog",
-        command: async () => {
-          await changeRoute("/account/settings")
-        },
-      },
-      {
         label: "Sign Out",
         icon: "pi pi-fw pi-sign-out",
         command: () => {
