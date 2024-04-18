@@ -46,6 +46,7 @@ watch(enter, () => {
             src="/img/icons/apple-splash-1136-640.jpg"
             alt="logo"
             loading="lazy"
+            width="500"
           />
         </template>
         <template #title> Grocery Share </template>

@@ -13,7 +13,7 @@ const toast = useToast()
 const confirm = useConfirm()
 const confirmRemove = (user: GroceryShareUser) => {
   confirm.require({
-    message: "Are you sure you want to remove this user?",
+    message: `Are you sure you want to remove ${user.username ?? user.email}?`,
     header: "Confirm Remove",
     icon: "pi pi-exclamation-triangle",
     rejectClass: "p-button-secondary p-button-outlined",
@@ -46,44 +46,68 @@ const isCreator = computed(() => {
 </script>
 
 <template>
-  <ConfirmDialog />
-  <h2>User List</h2>
-  <LazyOrderList :model-value="props.userList">
-    <template #item="slotProps">
-      <div class="flex">
-        <div class="flex flex-col">
-          <div class="flex">
-            <div class="w-[84px]">Username</div>
-            : {{ slotProps.item.username ?? "N/A" }}
-          </div>
-          <div class="flex">
-            <div class="w-[84px]">Email</div>
-            : {{ slotProps.item.email }}
-          </div>
-        </div>
-        <div
-          v-if="slotProps.item.creator"
-          class="flex items-center ml-3"
+  <div>
+    <ConfirmDialog />
+    <LazyCard class="w-[95%]">
+      <template #title>
+        <div class="flex items-center text-lg font-semibold">User List</div>
+      </template>
+
+      <template #content>
+        <LazyListbox
+          :options="props.userList"
+          data-key="id"
         >
-          <Badge>Creator</Badge>
-        </div>
-        <div
-          v-if="slotProps.item.id === user?.uid"
-          class="flex items-center ml-3"
-        >
-          <Badge class="bg-blue-500">Me</Badge>
-        </div>
-        <div class="flex items-center">
-          <Button
-            v-if="isCreator && !(slotProps.item.id === user?.uid)"
-            class="ml-3"
-            size="small"
-            @click="confirmRemove(slotProps.item)"
-            >Remove
-          </Button>
-        </div>
-      </div>
-      <hr class="mt-5" />
-    </template>
-  </LazyOrderList>
+          <template #option="slotProps">
+            <div class="flex items-center">
+              <div class="flex flex-wrap w-[80%]">
+                <div class="flex items-center w-full">
+                  <Icon
+                    class="mr-2"
+                    name="ph:user-list-duotone"
+                  />
+                  <span
+                    class="overflow-hidden overflow-ellipsis whitespace-nowrap max-w-[80%]"
+                  >
+                    : {{ slotProps.option.username }}
+                    <Badge v-if="slotProps.option.creator">Creator</Badge>
+                  </span>
+                </div>
+                <div class="flex items-center w-full">
+                  <Icon
+                    class="mr-2"
+                    name="ph:envelope-duotone"
+                  />
+                  <span
+                    class="overflow-hidden overflow-ellipsis whitespace-nowrap max-w-[80%]"
+                  >
+                    : {{ slotProps.option.email }}
+                  </span>
+                </div>
+              </div>
+
+              <div class="flex flex-wrap justify-center w-[20%]">
+                <Badge
+                  v-if="slotProps.option.id === user?.uid"
+                  class="bg-blue-500"
+                  >Me</Badge
+                >
+                <div class="flex items-center">
+                  <Button
+                    v-if="isCreator && !(slotProps.option.id === user?.uid)"
+                    size="small"
+                    severity="danger"
+                    @click="confirmRemove(slotProps.option)"
+                  >
+                    <Icon name="radix-icons:cross-circled" />
+                  </Button>
+                </div>
+              </div>
+            </div>
+            <hr class="mt-5" />
+          </template>
+        </LazyListbox>
+      </template>
+    </LazyCard>
+  </div>
 </template>

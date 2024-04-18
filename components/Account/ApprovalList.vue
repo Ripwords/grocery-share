@@ -6,8 +6,66 @@ const props = defineProps<{
 }>()
 
 const emits = defineEmits<{
-  (e: "approve", value: GroceryShareCode["toBeApproved"][0]): void
+  (e: "approve" | "reject", value: GroceryShareCode["toBeApproved"][0]): void
 }>()
+
+const toast = useToast()
+const confirm = useConfirm()
+const confirmApprove = (user: GroceryShareCode["toBeApproved"][0]) => {
+  confirm.require({
+    message: `Are you sure you want to approve ${user.username ?? user.email}?`,
+    header: "Confirm Approval",
+    icon: "pi pi-exclamation-triangle",
+    rejectClass: "p-button-secondary p-button-outlined",
+    rejectLabel: "Cancel",
+    acceptClass: "p-button-success",
+    acceptLabel: "Yes",
+    accept: () => {
+      toast.add({
+        severity: "success",
+        summary: "User approved",
+        life: 3500,
+      })
+
+      emits("approve", user)
+    },
+    reject: () => {
+      toast.add({
+        severity: "info",
+        summary: "User approval canceled",
+        life: 3500,
+      })
+    },
+  })
+}
+
+const confirmReject = (user: GroceryShareCode["toBeApproved"][0]) => {
+  confirm.require({
+    message: `Are you sure you want to reject ${user.username ?? user.email}?`,
+    header: "Confirm Rejection",
+    icon: "pi pi-exclamation-triangle",
+    rejectClass: "p-button-secondary p-button-outlined",
+    rejectLabel: "Cancel",
+    acceptClass: "p-button-danger",
+    acceptLabel: "Yes",
+    accept: () => {
+      toast.add({
+        severity: "success",
+        summary: "User rejected",
+        life: 3500,
+      })
+
+      emits("reject", user)
+    },
+    reject: () => {
+      toast.add({
+        severity: "info",
+        summary: "User rejection canceled",
+        life: 3500,
+      })
+    },
+  })
+}
 </script>
 
 <template>
@@ -17,36 +75,42 @@ const emits = defineEmits<{
     </template>
 
     <template #content>
-      <LazyOrderList
-        :model-value="props.approvalList"
+      <LazyListbox
+        :options="props.approvalList"
         data-key="id"
+        empty-message="No user(s) to approve!"
       >
-        <template #item="slotProps">
+        <template #option="slotProps">
           <div class="flex items-center">
-            <div class="flex flex-wrap">
-              <div class="flex items-center basis-[80%]">
+            <div class="flex flex-wrap w-[80%]">
+              <div class="flex items-center w-full">
                 <Icon
-                  class="mr-2 w-[15px]"
+                  class="mr-2"
                   name="ph:user-list-duotone"
                 />
-                : {{ slotProps.item.username ?? "N/A" }}
+                <span
+                  class="overflow-hidden overflow-ellipsis whitespace-nowrap max-w-[80%]"
+                >
+                  : {{ slotProps.option.username }}
+                </span>
               </div>
-              <div class="flex items-center flex-wrap">
+              <div class="flex items-center w-full">
                 <Icon
-                  class="mr-2 w-[15px]"
+                  class="mr-2"
                   name="ph:envelope-duotone"
                 />
-                <div class="basis-[80%]">
-                  : {{ slotProps.item.email }}asdfasdfasd
-                  asdfasdfasdfasdfasdfasdf
-                </div>
+                <span
+                  class="overflow-hidden overflow-ellipsis whitespace-nowrap max-w-[80%]"
+                >
+                  : {{ slotProps.option.email }}
+                </span>
               </div>
             </div>
-            <div class="flex flex-col items-center basis-[20%]">
+            <div class="flex flex-col items-center w-[20%]">
               <Button
                 class="ml-3"
                 size="small"
-                @click="emits('approve', slotProps.item)"
+                @click="confirmApprove(slotProps.option)"
               >
                 <Icon name="radix-icons:check-circled" />
               </Button>
@@ -55,7 +119,7 @@ const emits = defineEmits<{
                 class="ml-3 mt-1"
                 size="small"
                 severity="danger"
-                @click="emits('approve', slotProps.item)"
+                @click="confirmReject(slotProps.option)"
               >
                 <Icon name="radix-icons:cross-circled" />
               </Button>
@@ -63,7 +127,7 @@ const emits = defineEmits<{
           </div>
           <hr class="mt-3" />
         </template>
-      </LazyOrderList>
+      </LazyListbox>
     </template>
   </LazyCard>
 </template>

@@ -70,10 +70,7 @@ const menuItems = ref([
       </template>
       <template #end>
         <!-- Logged In -->
-        <LazySidebar
-          v-model:visible="sidebar"
-          position="right"
-        >
+        <LazySidebar v-model:visible="sidebar">
           <template #container>
             <Toolbar>
               <template #center>

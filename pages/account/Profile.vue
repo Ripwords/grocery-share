@@ -31,7 +31,7 @@ const copyCode = () => {
   window.navigator.clipboard.writeText(userCode.value)
   setInterval(() => {
     copied.value = false
-  }, 3500)
+  }, 2000)
   copied.value = true
 }
 
@@ -125,6 +125,21 @@ const approveUser = (toBeApproved: GroceryShareCode["toBeApproved"][0]) => {
   } as GroceryShareCode)
 }
 
+const rejectUser = (toBeApproved: GroceryShareCode["toBeApproved"][0]) => {
+  const codeDoc = doc(db, "codes", userCode.value)
+  updateDoc(codeDoc, {
+    toBeApproved: codeColRef.value
+      .find((c) => c.id === userCode.value)!
+      .toBeApproved.filter((user) => user.id !== toBeApproved.id),
+  } as GroceryShareCode)
+
+  const userDoc = doc(db, "users", toBeApproved.id)
+  updateDoc(userDoc, {
+    code: "",
+    creator: false,
+  } as GroceryShareUser)
+}
+
 const removeUser = (user: GroceryShareUser) => {
   const codeDoc = doc(db, "codes", userCode.value)
   updateDoc(codeDoc, {
@@ -161,7 +176,8 @@ const removeUser = (user: GroceryShareUser) => {
           </div>
           <div v-else>
             <Button
-              :severity="copied ? 'success' : 'info'"
+              :severity="copied ? 'info' : 'info'"
+              :disabled="copied"
               @click="copyCode"
             >
               {{ copied ? "Copied!" : "Copy Code" }}
@@ -177,9 +193,13 @@ const removeUser = (user: GroceryShareUser) => {
           <LazyAccountApprovalList
             :approvalList
             @approve="approveUser"
+            @reject="rejectUser"
           />
         </div>
-        <div v-if="userApproved">
+        <div
+          v-if="userApproved"
+          class="mt-3"
+        >
           <LazyAccountUserList
             :userList
             @remove-user="removeUser"
