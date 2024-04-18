@@ -21,8 +21,6 @@ if (props.type === "register" && confirmPassword.value === undefined) {
   throw new Error("confirmPassword is required for register")
 }
 
-const showPassword = ref(false)
-
 const { enter } = useMagicKeys()
 
 watch(enter, () => {
@@ -42,7 +40,7 @@ watch(enter, () => {
       :class="{ 'opacity-0': !props.loading }"
     />
     <div v-focustrap>
-      <Card class="w-[450px]">
+      <Card class="w-[95%]">
         <template #header>
           <img
             src="/img/icons/apple-splash-1136-640.jpg"
@@ -74,21 +72,18 @@ watch(enter, () => {
                 <InputGroupAddon>
                   <Icon name="ph:password-duotone" />
                 </InputGroupAddon>
-                <InputText
+                <Password
                   v-model="password"
                   :disabled="loading"
-                  placeholder="Password"
-                  :type="showPassword ? 'text' : 'password'"
+                  :feedback="props.type === 'register'"
                   :autocomplete="
-                    props.type === 'login' ? 'current-password' : 'new-password'
+                    props.type === 'register'
+                      ? 'new-password'
+                      : 'current-password'
                   "
+                  placeholder="Password"
+                  toggle-mask
                 />
-                <InputGroupAddon>
-                  <Icon
-                    :name="showPassword ? 'ph:eye-slash-fill' : 'ph:eye-fill'"
-                    @click="showPassword = !showPassword"
-                  />
-                </InputGroupAddon>
               </InputGroup>
 
               <!-- CONFIRM PASSWORD -->
@@ -96,18 +91,13 @@ watch(enter, () => {
                 <InputGroupAddon>
                   <Icon name="ph:password-duotone" />
                 </InputGroupAddon>
-                <InputText
+                <Password
                   v-model="confirmPassword"
                   :disabled="loading"
+                  :feedback="false"
                   placeholder="Confirm Password"
-                  :type="showPassword ? 'text' : 'password'"
+                  toggle-mask
                 />
-                <InputGroupAddon>
-                  <Icon
-                    :name="showPassword ? 'ph:eye-slash-fill' : 'ph:eye-fill'"
-                    @click="showPassword = !showPassword"
-                  />
-                </InputGroupAddon>
               </InputGroup>
             </form>
           </div>

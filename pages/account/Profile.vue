@@ -142,51 +142,50 @@ const removeUser = (user: GroceryShareUser) => {
 </script>
 
 <template>
-  <div>
-    <div class="my-3">
-      <h1 class="my-1">Code</h1>
-      <div v-if="userCode === ''">
-        <Button @click="createCode"> Create New Code </Button>
-        <hr />
-        <Button @click="joinGroup"> Join Group </Button>
-        <InputText
-          v-model="joinCode"
-          placeholder="Enter Code"
-        />
-      </div>
-      <div v-else>
-        <Button @click="copyCode">
-          {{ copied ? "Copied!" : "Copy Code" }}
-        </Button>
-        <InputText
-          :value="userCode"
-          readonly
-        />
-      </div>
-    </div>
-    <hr />
-    <div class="flex justify-center">
-      <div
-        v-if="userIsCreator"
-        class="w-[50%]"
-      >
-        <LazyAccountApprovalList
-          :approvalList
-          @approve="approveUser"
-        />
-      </div>
-      <div
-        v-if="userApproved"
-        class="w-[50%]"
-      >
-        <LazyAccountUserList
-          :userList
-          @remove-user="removeUser"
-        />
-      </div>
-    </div>
-    <div v-if="!userApproved && userCode !== ''">
-      <h2>Awaiting Approval...</h2>
-    </div>
+  <div class="flex justify-center my-5">
+    <Card class="w-[95%] max-w-[500px]">
+      <template #title>
+        <h2 class="text-lg font-semibold">Account</h2>
+      </template>
+      <template #content>
+        <LazyAccountCode :approved="!!!userApproved && userCode !== ''">
+          <div v-if="userCode === ''">
+            <Button @click="createCode"> Create New Code </Button>
+            <br />
+            <Button @click="joinGroup"> Join Group </Button>
+            <InputText
+              v-model="joinCode"
+              class="w-[215px]"
+              placeholder="Enter Code"
+            />
+          </div>
+          <div v-else>
+            <Button
+              :severity="copied ? 'success' : 'info'"
+              @click="copyCode"
+            >
+              {{ copied ? "Copied!" : "Copy Code" }}
+            </Button>
+            <InputText
+              :value="userCode"
+              readonly
+            />
+          </div>
+        </LazyAccountCode>
+        <br />
+        <div v-if="userIsCreator">
+          <LazyAccountApprovalList
+            :approvalList
+            @approve="approveUser"
+          />
+        </div>
+        <div v-if="userApproved">
+          <LazyAccountUserList
+            :userList
+            @remove-user="removeUser"
+          />
+        </div>
+      </template>
+    </Card>
   </div>
 </template>
