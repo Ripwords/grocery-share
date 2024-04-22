@@ -1,7 +1,7 @@
 import { collection } from "firebase/firestore"
 import type { GroceryShareCode, GroceryShareUser } from "~/schema/schema"
 
-export const useGetApprovalList = (code: ComputedRef<string>) => {
+export const useGetApproval = (code: ComputedRef<string>) => {
   const user = useCurrentUser()
   const db = useFirestore()
 

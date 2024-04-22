@@ -39,6 +39,27 @@ const confirmRemove = (user: GroceryShareUser) => {
   })
 }
 
+const confirmLeave = (user: GroceryShareUser) => {
+  confirm.require({
+    message: `Are you sure you want to leave the group?`,
+    header: "Confirm Leave",
+    icon: "pi pi-exclamation-triangle",
+    rejectClass: "p-button-secondary p-button-outlined",
+    rejectLabel: "Cancel",
+    acceptClass: "p-button-danger",
+    acceptLabel: "Yes",
+    accept: () => {
+      toast.add({
+        severity: "success",
+        summary: "User removed",
+        life: 3500,
+      })
+
+      emits("removeUser", user)
+    },
+  })
+}
+
 const user = useCurrentUser()
 const isCreator = computed(() => {
   return user.value?.email === props.userList.find((u) => u.creator)?.email
@@ -87,11 +108,16 @@ const isCreator = computed(() => {
               </div>
 
               <div class="flex flex-wrap justify-center w-[20%]">
-                <Badge
-                  v-if="slotProps.option.id === user?.uid"
-                  class="bg-blue-500"
-                  >Me</Badge
-                >
+                <div v-if="slotProps.option.id === user?.uid && !isCreator">
+                  <Button
+                    severity="danger"
+                    size="small"
+                    class="mr-2"
+                    @click="confirmLeave(slotProps.option)"
+                  >
+                    <Icon name="pepicons-print:leave" />
+                  </Button>
+                </div>
                 <div class="flex items-center">
                   <Button
                     v-if="isCreator && !(slotProps.option.id === user?.uid)"

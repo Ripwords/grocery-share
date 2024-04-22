@@ -21,7 +21,7 @@ const user = useCurrentUser()
 const joinCode = ref("")
 const { userCode } = useUserCode()
 const { approvalList, userApproved, userIsCreator, userList } =
-  useGetApprovalList(userCode)
+  useGetApproval(userCode)
 
 const db = useFirestore()
 const codeCol = collection(db, "codes")
@@ -112,6 +112,21 @@ const joinGroup = async () => {
   joinCode.value = ""
 }
 
+const cancelJoin = async () => {
+  const codeDoc = doc(db, "codes", userCode.value)
+  updateDoc(codeDoc, {
+    toBeApproved: codeColRef.value
+      .find((c) => c.id === userCode.value)!
+      .toBeApproved.filter((u) => u.id !== user.value!.uid),
+  } as GroceryShareCode)
+
+  const userDoc = doc(db, "users", user.value!.uid)
+  updateDoc(userDoc, {
+    code: "",
+    creator: false,
+  } as GroceryShareUser)
+}
+
 const approveUser = (toBeApproved: GroceryShareCode["toBeApproved"][0]) => {
   const codeDoc = doc(db, "codes", userCode.value)
   setDoc(codeDoc, {
@@ -182,7 +197,11 @@ const removeUser = (user: GroceryShareUser) => {
             >
               {{ copied ? "Copied!" : "Copy Code" }}
             </Button>
+            <div v-if="!userApproved">
+              <Button @click="cancelJoin"> Cancel Request </Button>
+            </div>
             <InputText
+              class="min-w-[13.3rem]"
               :value="userCode"
               readonly
             />
