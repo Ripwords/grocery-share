@@ -1,8 +1,7 @@
 <script lang="ts" setup>
 import {
-  getRedirectResult,
   signInWithEmailAndPassword,
-  signInWithRedirect,
+  signInWithPopup,
   GoogleAuthProvider,
 } from "firebase/auth"
 
@@ -51,7 +50,21 @@ const login = async () => {
 const loginWithGoogle = async () => {
   const provider = new GoogleAuthProvider()
   try {
-    await signInWithRedirect(auth!, provider)
+    signInWithPopup(auth!, provider)
+      .then(() => {
+        router.push("/home/grocery-list")
+      })
+      .catch((error) => {
+        console.error(error)
+        toast.add({
+          severity: "error",
+          summary: FirebaseAuthErrors(error.code),
+          life: 3500,
+        })
+      })
+      .finally(() => {
+        loading.value = false
+      })
   } catch (e) {
     console.log(e)
   }
@@ -63,18 +76,7 @@ onMounted(() => {
     router.push("/home/grocery-list")
   }
 
-  getRedirectResult(auth!)
-    .then((result) => {
-      if (result?.user) {
-        router.push("/home/grocery-list")
-      }
-    })
-    .catch((error) => {
-      console.error(error)
-    })
-    .finally(() => {
-      loading.value = false
-    })
+  loading.value = false
 })
 </script>
 
