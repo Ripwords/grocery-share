@@ -1,12 +1,26 @@
 <script lang="ts" setup>
-import { doc, updateDoc } from "firebase/firestore"
-import type { GroceryListItemDB, GroceryListItem } from "~/schema/schema"
+import { addDoc, collection, deleteDoc, doc } from "firebase/firestore"
+import type { GroceryListItem } from "~/schema/schema"
 
 definePageMeta({
   middleware: ["auth", "joined-client"],
 })
 
 const addDialog = ref(false)
+watch(addDialog, () => {
+  if (!addDialog.value) {
+    reset()
+  }
+})
+
+const reset = () => {
+  searchValue.value = ""
+  locationValue.value = ""
+  quantity.value = 1
+  remarks.value = ""
+  addDialog.value = false
+}
+
 const quantity = ref(1)
 const remarks = ref("")
 
@@ -21,8 +35,11 @@ watch(searchValue, () => {
     locationValue.value =
       groceryTypes.value.find((type) => type.name === searchValue.value)
         ?.location ?? ""
+  } else {
+    locationValue.value = ""
   }
 })
+
 const items = ref<string[]>([])
 
 const searchFilter = () => {
@@ -31,72 +48,60 @@ const searchFilter = () => {
       type.name.toLowerCase().includes(searchValue.value.toLowerCase())
     )
     .map((type) => type.name)
+
+  if (items.value.length === 0) {
+    items.value = [searchValue.value]
+  }
 }
 
 const addGrocery = async () => {
-  const grocery = groceryTypes.value.find(
+  const db = useFirestore()
+
+  let grocery = groceryTypes.value.find(
     (type) => type.name === searchValue.value
   )
-  if (!grocery || !userCode.value) return
 
-  const db = useFirestore()
-  const groceryEntry: GroceryListItemDB = {
+  if (!grocery) {
+    const newTypeID = await addDoc(
+      collection(db, "codes", userCode.value, "types"),
+      {
+        name: searchValue.value,
+        location: locationValue.value,
+      }
+    )
+
+    grocery = {
+      id: newTypeID.id,
+      name: searchValue.value,
+      location: locationValue.value,
+    }
+  }
+
+  const groceryEntry:
+    | GroceryListItem
+    | {
+        item: ReturnType<typeof doc>
+      } = {
     item: doc(db, "codes", userCode.value, "types", grocery.id),
     remarks: remarks.value,
     quantity: quantity.value,
+    locationOverride:
+      locationValue.value !== grocery.location
+        ? locationValue.value
+        : undefined,
   }
 
-  if (locationValue.value !== grocery.location) {
-    groceryEntry.locationOverride = locationValue.value
-  }
-  console.log(groceryEntry)
-  console.log(
-    ...(groceryList.value?.map((item) =>
-      filteredObj({
-        item: doc(db, "codes", userCode.value, "types", item.item.id),
-        remarks: item.remarks == "" ? undefined : item.remarks,
-        quantity: item.quantity,
-        locationOverride: item.locationOverride,
-      })
-    ) ?? [])
+  await addDoc(
+    collection(db, "codes", userCode.value, "list"),
+    filteredObj(groceryEntry)
   )
 
-  updateDoc(doc(db, "codes", userCode.value), {
-    list: [
-      ...(groceryList.value?.map((item) =>
-        filteredObj({
-          item: doc(db, "codes", userCode.value, "types", item.item.id),
-          remarks: item.remarks == "" ? undefined : item.remarks,
-          quantity: item.quantity,
-          locationOverride: item.locationOverride,
-        })
-      ) ?? []),
-      filteredObj(groceryEntry),
-    ],
-  })
-
-  quantity.value = 1
-  searchValue.value = ""
-  remarks.value = ""
-  addDialog.value = false
+  reset()
 }
 
 const purchasedGrocery = (grocery: GroceryListItem) => {
   const db = useFirestore()
-  updateDoc(doc(db, "codes", userCode.value), {
-    list: [
-      ...groceryList.value
-        .filter((item) => item.item.id !== grocery.item.id)
-        .map((item) =>
-          filteredObj({
-            item: doc(db, "codes", userCode.value, "types", item.item.id),
-            remarks: item.remarks == "" ? undefined : item.remarks,
-            quantity: item.quantity,
-            locationOverride: item.locationOverride,
-          })
-        ),
-    ],
-  })
+  deleteDoc(doc(db, "codes", userCode.value, "list", grocery.id))
 }
 </script>
 
@@ -129,10 +134,7 @@ const purchasedGrocery = (grocery: GroceryListItem) => {
       </FloatLabel>
 
       <!-- Display Selected Item -->
-      <div
-        v-if="items.includes(searchValue)"
-        class="mt-5"
-      >
+      <div class="mt-5">
         <LazyCard>
           <template #title>
             <div class="text-lg font-semibold">Selected Grocery</div>
@@ -141,7 +143,11 @@ const purchasedGrocery = (grocery: GroceryListItem) => {
             <div class="flex">
               <div class="flex flex-wrap w-[80%] items-center">
                 <LazyGroceryTypeListItem
-                  :labels="[`${searchValue}`, `${locationValue}`, `${remarks}`]"
+                  :labels="[
+                    `${searchValue ?? ''}`,
+                    `${locationValue}`,
+                    `${remarks}`,
+                  ]"
                   :icons="[
                     'gridicons:types',
                     'material-symbols:location-on-outline',
@@ -182,6 +188,7 @@ const purchasedGrocery = (grocery: GroceryListItem) => {
             <Button
               class="w-full"
               label="Add"
+              :disabled="!searchValue"
               @click="addGrocery"
             />
           </template>
@@ -195,40 +202,47 @@ const purchasedGrocery = (grocery: GroceryListItem) => {
       </template>
 
       <template #content>
-        <LazyCard
-          v-for="grocery in groceryList"
-          :key="grocery.item.id"
-          class="mb-5"
-        >
-          <template #title>
-            <div class="text-lg font-semibold">{{ grocery.item.name }}</div>
-          </template>
-          <template #content>
-            <div class="flex">
-              <div class="flex flex-wrap w-[80%] items-center">
-                <LazyGroceryTypeListItem
-                  :labels="[
-                    `${grocery.quantity}`,
-                    `${grocery.locationOverride ?? grocery.item.location}`,
-                    `${grocery.remarks ?? ''}`,
-                  ]"
-                  :icons="[
-                    'ic:twotone-numbers',
-                    'material-symbols:location-on-outline',
-                    'fluent:text-description-16-filled',
-                  ]"
-                />
+        <div v-if="groceryList.length <= 0">
+          <div class="flex justify-center items-center h-[10rem]">
+            <div class="text-lg">No Groceries</div>
+          </div>
+        </div>
+        <div v-else>
+          <LazyCard
+            v-for="grocery in groceryList"
+            :key="grocery.id"
+            class="mb-5"
+          >
+            <template #title>
+              <div class="text-lg font-semibold">{{ grocery.item.name }}</div>
+            </template>
+            <template #content>
+              <div class="flex">
+                <div class="flex flex-wrap w-[80%] items-center">
+                  <LazyGroceryTypeListItem
+                    :labels="[
+                      `${grocery.quantity}`,
+                      `${grocery.locationOverride ?? grocery.item.location}`,
+                      `${grocery.remarks ?? ''}`,
+                    ]"
+                    :icons="[
+                      'ic:twotone-numbers',
+                      'material-symbols:location-on-outline',
+                      'fluent:text-description-16-filled',
+                    ]"
+                  />
+                </div>
+                <div class="flex w-[20%] justify-end">
+                  <Button
+                    icon="pi pi-check"
+                    class="p-button-rounded p-button-success p-button-outlined"
+                    @click="purchasedGrocery(grocery)"
+                  />
+                </div>
               </div>
-              <div class="flex w-[20%] justify-end">
-                <Button
-                  icon="pi pi-check"
-                  class="p-button-rounded p-button-success p-button-outlined"
-                  @click="purchasedGrocery(grocery)"
-                />
-              </div>
-            </div>
-          </template>
-        </LazyCard>
+            </template>
+          </LazyCard>
+        </div>
       </template>
     </Card>
   </div>

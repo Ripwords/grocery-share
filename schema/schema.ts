@@ -1,5 +1,3 @@
-import type { doc } from "firebase/firestore";
-
 export type GroceryShareCode = {
   id: string;
   users: string[];
@@ -8,7 +6,6 @@ export type GroceryShareCode = {
     username: string;
     email: string;
   }[];
-  list: GroceryList;
 }
 
 export type GroceryShareUser = {
@@ -23,18 +20,11 @@ export type GroceryItemType = {
   id: string;
   name: string;
   location: string;
-  totalAdded: number;
 }
 
 export type GroceryListItem = {
+  id: string;
   item: GroceryItemType;
-  remarks?: string;
-  quantity: number;
-  locationOverride?: string;
-}
-
-export type GroceryListItemDB = {
-  item: ReturnType<typeof doc>;
   remarks?: string;
   quantity: number;
   locationOverride?: string;
