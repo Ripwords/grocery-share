@@ -23,7 +23,6 @@ const editDialogId = ref("")
 const typeData = reactive({
   name: "",
   location: "",
-  remarks: "",
 })
 
 const { userCode } = useUserCode()
@@ -32,7 +31,6 @@ const { groceryTypes } = useGetGroceryTypes(userCode)
 const cancelUpdate = () => {
   typeData.name = ""
   typeData.location = ""
-  typeData.remarks = ""
   editDialog.value = false
   addDialog.value = false
 }
@@ -43,13 +41,11 @@ const addType = () => {
 
   addDoc(typesCol, {
     name: typeData.name,
-    remarks: typeData.remarks,
     location: typeData.location,
   })
     .then(() => {
       typeData.name = ""
       typeData.location = ""
-      typeData.remarks = ""
 
       toast.add({
         severity: "success",
@@ -73,7 +69,6 @@ const editType = (e: GroceryItemType) => {
   editDialogId.value = e.id
   typeData.location = e.location
   typeData.name = e.name
-  typeData.remarks = e.remarks
   editDialog.value = true
 }
 
@@ -92,13 +87,11 @@ const updateType = () => {
 
   updateDoc(typeDoc, {
     name: typeData.name,
-    remarks: typeData.remarks,
     location: typeData.location,
   })
     .then(() => {
       typeData.name = ""
       typeData.location = ""
-      typeData.remarks = ""
 
       toast.add({
         severity: "success",
@@ -223,15 +216,10 @@ watch([addDialog, editDialog], () => {
             <div class="flex items-center">
               <div class="flex flex-wrap w-[80%]">
                 <LazyGroceryTypeListItem
-                  :labels="
-                    Object.values(slotProps.option).filter(
-                      (value) => typeof value === 'string'
-                    )
-                  "
+                  :labels="[slotProps.option.name, slotProps.option.location]"
                   :icons="[
                     'gridicons:types',
                     'material-symbols:location-on-outline',
-                    'fluent:text-description-16-filled',
                   ]"
                 />
               </div>
