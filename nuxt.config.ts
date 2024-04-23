@@ -43,8 +43,13 @@ export default defineNuxtConfig({
       navigateFallback: "/"
     },
     base: '/',
+    strategies: 'generateSW',
     workbox: {
-      globPatterns: ['**/*.{js,css,html,png,svg,ico}'],
+      // Only precache these files - html should be excluded
+      globPatterns: ['**/*.{js,css}'],
+      // Don't fallback on document based (e.g. `/some-page`) requests
+      // Even though this says `null` by default, I had to set this specifically to `null` to make it work
+      navigateFallback: null,
     },
     injectManifest: {
       globPatterns: ['**/*.{js,css,html,png,svg,ico}'],
