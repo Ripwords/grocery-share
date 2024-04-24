@@ -213,7 +213,7 @@ watch([addDialog, editDialog], () => {
           empty-message="No groceries added!"
         >
           <template #option="slotProps">
-            <div class="flex items-center">
+            <div class="flex items-center max-w-[240px]">
               <div class="flex flex-wrap w-[80%]">
                 <LazyGroceryTypeListItem
                   :labels="[slotProps.option.name, slotProps.option.location]"

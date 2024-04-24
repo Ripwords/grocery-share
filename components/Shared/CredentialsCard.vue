@@ -1,13 +1,13 @@
 <script lang="ts" setup>
 interface CredentialProps {
-  type: "login" | "register"
+  type: "login" | "register" | "forgot"
   loading?: boolean
 }
 
 const props = withDefaults(defineProps<CredentialProps>(), {
   loading: false,
 })
-const emits = defineEmits(["login", "register"])
+const emits = defineEmits(["login", "register", "forgot"])
 const router = useRouter()
 
 const email = defineModel<string>("email", {
@@ -26,8 +26,10 @@ const { enter } = useMagicKeys()
 watch(enter, () => {
   if (props.type === "login") {
     emits("login")
-  } else {
+  } else if (props.type === "register") {
     emits("register")
+  } else {
+    emits("forgot")
   }
 })
 </script>
@@ -69,7 +71,9 @@ watch(enter, () => {
               </InputGroup>
 
               <!-- PASSWORD -->
-              <InputGroup>
+              <InputGroup
+                v-if="props.type === 'login' || props.type === 'register'"
+              >
                 <InputGroupAddon>
                   <Icon name="ph:password-duotone" />
                 </InputGroupAddon>
@@ -123,7 +127,7 @@ watch(enter, () => {
             <slot />
           </div>
 
-          <div v-else>
+          <div v-else-if="props.type === 'register'">
             <div class="flex justify-center">
               <Button
                 :disabled="loading"
@@ -132,15 +136,40 @@ watch(enter, () => {
                 @click="emits('register')"
               />
             </div>
-            <small class="flex justify-end mt-5 -mb-3 -mr-2">
-              Already have an account?&nbsp;
-              <a
-                class="cursor-pointer underline text-blue-500 hover:text-blue-700"
-                @click="router.push('/auth/login')"
-                >Login here</a
-              >
-            </small>
           </div>
+
+          <div v-else>
+            <div class="flex justify-center">
+              <Button
+                :disabled="loading"
+                type="submit"
+                label="Send Reset Email"
+                @click="emits('forgot')"
+              />
+            </div>
+          </div>
+          <small
+            v-if="props.type === 'login'"
+            class="flex justify-end mt-5 -mb-3 -mr-2"
+          >
+            Forgot Password?&nbsp;
+            <a
+              class="cursor-pointer underline text-blue-500 hover:text-blue-700"
+              @click="router.push('/auth/forgot')"
+              >Reset here</a
+            >
+          </small>
+          <small
+            v-else
+            class="flex justify-end mt-5 -mb-3 -mr-2"
+          >
+            Already have an account?&nbsp;
+            <a
+              class="cursor-pointer underline text-blue-500 hover:text-blue-700"
+              @click="router.push('/auth/login')"
+              >Login here</a
+            >
+          </small>
         </template>
       </Card>
     </div>
